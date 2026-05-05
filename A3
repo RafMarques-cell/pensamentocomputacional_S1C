@@ -1,0 +1,110 @@
+A3
+1:Entradas e Saídas do Sistema
+Entradas (inputs)
+LDR (sensor de luminosidade)
+Tipo: analógico
+Função: medir a luz ambiente (0–1023)
+Botão modo automático
+Ativa leitura do LDR
+Botão modo manual (alerta)
+Força o sistema para estado crítico (vermelho)
+Botão desligar
+Desliga completamente o sistema
+
+Saídas (outputs)
+LED RGB
+Indica o estado da iluminação:
+Verde → ambiente claro
+Amarelo → iluminação média
+Vermelho → ambiente escuro ou alerta manual
+
+
+2:Componentes do Sistema e Funções
+Microcontrolador (ex: Arduino)
+Processa sinais do LDR e dos botões
+Controla o LED RGB
+LDR
+Sensor que varia resistência conforme a luz
+Permite identificar nível de iluminação
+LED RGB
+Exibe visualmente o estado do ambiente
+Botões (3x)
+Seleção de modo de operação
+Resistores
+Divisor de tensão (LDR)
+Proteção do LED
+
+
+3:1. Estados do sistema
+
+O sistema pode estar em três modos:
+
+DESLIGADO
+AUTOMÁTICO
+MANUAL (ALERTA)
+2. Prioridade dos botões (ESSENCIAL)
+
+Para evitar conflitos quando múltiplos botões forem pressionados:
+
+👉 Ordem de prioridade recomendada:
+
+Desligar (maior prioridade)
+Manual (alerta)
+Automático (menor prioridade)
+3. Modo desligado
+LED RGB apagado
+Ignora leitura do LDR
+4. Modo manual (alerta)
+LED RGB sempre vermelho
+Ignora completamente o LDR
+5. Modo automático
+Lê valor do LDR
+Classifica em três níveis (exemplo):
+Claro → valor alto
+Médio → valor intermediário
+Escuro → valor baixo
+Define cor do LED:
+Claro → verde
+Médio → amarelo
+Escuro → vermelho
+6. Faixas de leitura do LDR (exemplo)
+0   – 340   → escuro
+341 – 680   → médio
+681 – 1023  → claro
+
+
+4:if (botaoDesligar == pressionado) {
+    modo = DESLIGADO;
+}
+else if (botaoManual == pressionado) {
+    modo = MANUAL;
+}
+else if (botaoAutomatico == pressionado) {
+    modo = AUTOMATICO;
+}
+
+👉 O uso de else if garante que apenas um modo será ativo.
+
+2. Controle do LED conforme o modo
+if (modo == DESLIGADO) {
+    desligaRGB();
+}
+else if (modo == MANUAL) {
+    setRGB(255, 0, 0); // vermelho
+}
+else if (modo == AUTOMATICO) {
+    // leitura do LDR acontece aqui
+}
+3. Leitura e classificação do LDR
+if (valorLDR <= 340) {
+    // escuro
+    setRGB(255, 0, 0); // vermelho
+}
+else if (valorLDR <= 680) {
+    // médio
+    setRGB(255, 255, 0); // amarelo
+}
+else {
+    // claro
+    setRGB(0, 255, 0); // verde
+}
